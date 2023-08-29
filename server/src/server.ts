@@ -1,14 +1,16 @@
-import express,{Request,Response} from "express";
+import 'dotenv/config'
+import { Path } from "typescript";
+import env from './utils/env.validator'
+import { config } from 'dotenv';
+import app from '.';
 
 
-const app=express();
+const PORT=process.env.PORT
 
-app.get('/',(req:Request,res:Response)=>{
-    res.send("hello my name is roshan")
-    
+
+
+
+app.listen(PORT,()=>{
+    console.log(`listening at the port ${PORT}`)
 })
 
-
-app.listen(3000,()=>{
-    console.log(`listening at the port 3000`)
-})
