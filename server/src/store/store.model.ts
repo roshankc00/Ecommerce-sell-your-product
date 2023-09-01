@@ -1,22 +1,24 @@
 import mongoose from "mongoose";
 import isEmail from "validator/lib/isEmail";
+import StoreModelInterface from "./store.interfacse";
 
-const storeSchema = new mongoose.Schema(
+const storeSchema = new mongoose.Schema<StoreModelInterface>(
   {
     title: {
       type: String,
-      required: [true],
+      required: true,
     },
     email: {
         type: String,
-        required: [true],
-        unique: [true, ""],
+        required: true,
+        unique: true,
         validate: [isEmail, "please enter a valid email"],
       },
     description: {
       type: String,
-      required: [true],
+      required: true,
     },
+
     location: {
       address: {
         type: String,
@@ -60,5 +62,5 @@ const storeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const StoreModel = mongoose.model("Store", storeSchema);
+const StoreModel = mongoose.model<StoreModelInterface>("Store", storeSchema);
 export default StoreModel;

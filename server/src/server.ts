@@ -5,12 +5,13 @@ import { config } from 'dotenv';
 import app from '.';
 
 
-const PORT=process.env.PORT
+const PORT=env.PORT
+const ENV=env.NODE_ENV
 
 
 
 
 app.listen(PORT,()=>{
-    console.log(`listening at the port ${PORT}`)
+    console.log(`listening for the ${ENV} at the port Number ${PORT}`)
 })
 

@@ -25,7 +25,7 @@ const userSchema=new mongoose.Schema<UserModelInterface>({
 
     avatar:{
         publicId:String,
-        utl:String
+        url:String
     },
     roles:{
         type:String,

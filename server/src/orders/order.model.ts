@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import OrderModelInterface from "./order.interface";
 
 
-const orderSchema=new mongoose.Schema({
+const orderSchema=new mongoose.Schema<OrderModelInterface>({
 
     shippingInfo:{
         address:{
@@ -20,6 +21,8 @@ const orderSchema=new mongoose.Schema({
             type:String,
             required:true,            
         },
+
+        required:true
                 
 
     },
@@ -93,6 +96,6 @@ const orderSchema=new mongoose.Schema({
 },{timestamps:true})
 
 
-const OrderModel=mongoose.model('Order',orderSchema)
+const OrderModel=mongoose.model<OrderModelInterface>('Order',orderSchema)
 
 export default OrderModel

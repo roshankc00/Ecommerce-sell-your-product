@@ -6,6 +6,7 @@ const categorySchema=new mongoose.Schema<categoryInterface>({
     title:{
         type:String,
         required:[true,categoryConstants.TITLE_REQUIRED_MESSAGE],
+        unique:true
 
     },
     description:{
@@ -16,7 +17,7 @@ const categorySchema=new mongoose.Schema<categoryInterface>({
     addedBy:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
-        required:[true,categoryConstants.ADDEDBY_REQUIRED_MESSAGE]
+        // required:[true,categoryConstants.ADDEDBY_REQUIRED_MESSAGE]
     },
     discontinues:{
         type:Boolean,
@@ -30,6 +31,6 @@ const categorySchema=new mongoose.Schema<categoryInterface>({
 },{timestamps:true})
 
 
-const UserModel=mongoose.model<categoryInterface>('Category',categorySchema)
+const CategoryModel=mongoose.model<categoryInterface>('Category',categorySchema)
 
-export default UserModel
+export default CategoryModel

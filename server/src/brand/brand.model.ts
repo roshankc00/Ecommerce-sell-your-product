@@ -31,6 +31,6 @@ const categorySchema=new mongoose.Schema<brandInterface>({
 },{timestamps:true})
 
 
-const UserModel=mongoose.model<brandInterface>('Brand',categorySchema)
+const BrandModel=mongoose.model<brandInterface>('Brand',categorySchema)
 
-export default UserModel
+export default BrandModel

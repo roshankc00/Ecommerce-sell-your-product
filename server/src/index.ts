@@ -9,6 +9,8 @@ import mongoSanitize from 'express-mongo-sanitize'
 import 'dotenv/config'
 import env from './utils/env.validator'
 import connectToDb from "./config/db.config";
+import ErrorMiddleware, { notFound } from "./middlewares/errorhandler.middleware";
+import allRoutes from './importRoutes/index'
 
 
 const app=express();
@@ -26,10 +28,10 @@ app.use(mongoSanitize())
 
 
 
-app.get('/',(req:Request,res:Response)=>{
-    res.send("hello my name is roshan")
-    
-})
+
+app.use("/api/v1",allRoutes)
+app.use(ErrorMiddleware)
+app.use(notFound)
 
 
 

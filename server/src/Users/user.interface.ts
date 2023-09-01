@@ -19,3 +19,4 @@ interface UserModelInterface extends Document{
 }
 
 export default UserModelInterface
+
