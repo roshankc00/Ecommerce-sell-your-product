@@ -39,6 +39,7 @@ const ErrorMiddleware=(err:any,req:Request,res:Response,next:NextFunction)=>{
    
 
     next()
+    return 
 
 }
 

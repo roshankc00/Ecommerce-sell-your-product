@@ -5,18 +5,27 @@ interface UserModelInterface extends Document{
     email:string,
     password:string,
     
-    phone:number
-    avatar:{
+    phone:string
+    avatar?:{
         publicId:string,
         url:string
     },
-    roles:string,
-    updatedBy?:Date
-    addedBy:Date
-    store:mongoose.Schema.Types.ObjectId
-    refreshToken:string,
-    blocked?:boolean
+    updatedBy?:mongoose.Schema.Types.ObjectId,
+    roles?:string,
+    store?:mongoose.Schema.Types.ObjectId
+    refreshToken?:string,
+    blocked?:boolean,
+    comparePassword(password:string):Promise<boolean>
+    
 }
 
 export default UserModelInterface
 
+
+
+
+export interface payloadInterface {
+    email:string,
+    id:string
+
+}

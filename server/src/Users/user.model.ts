@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import isEmail from "validator/lib/isEmail";
 import UserModelInterface from "./user.interface";
+import bcrypt from 'bcrypt'
 
 const userSchema=new mongoose.Schema<UserModelInterface>({
     name:{
@@ -16,10 +17,12 @@ const userSchema=new mongoose.Schema<UserModelInterface>({
     password:{
         type:String,
         minLength:[6,],
-        select:false
-    },
-    phone:{
-        type:Number
+        select:false,
+        required:true
+      },
+      phone:{
+        type:String,
+        required:true
     },
    
 
@@ -35,13 +38,11 @@ const userSchema=new mongoose.Schema<UserModelInterface>({
     updatedBy: {
         type: mongoose.Schema.ObjectId,
         ref: "User",
-        required: [true],
       },
 
       store:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
-        required:true
       },
 
       refreshToken:{
@@ -51,15 +52,28 @@ const userSchema=new mongoose.Schema<UserModelInterface>({
         type:Boolean,
         default:false
       }
-
-
-
-
-
-    
+   
 
 
 },{timestamps:true})
+
+
+
+userSchema.pre(
+  "save",
+  async function(next){
+      if(this.isModified('password')){
+          this.password=await bcrypt.hash(this.password,10)
+          return 
+      }
+      next()
+  }
+)
+
+
+
+
+
 
 const UserModel=mongoose.model<UserModelInterface>('User',userSchema)
 export default UserModel    
