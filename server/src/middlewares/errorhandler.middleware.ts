@@ -5,7 +5,6 @@ import { Request,Response,NextFunction } from 'express';
 export const notFound=async(req:Request,res:Response,next:NextFunction)=>{
     const error=new Error(`Route note found ${req.originalUrl}`)
     res.status(404)
-    next()
 }
 
 
@@ -28,6 +27,7 @@ const ErrorMiddleware=(err:any,req:Request,res:Response,next:NextFunction)=>{
         const fieldName=err.message.split("index: ")[1].split("_")[0];
         const message=`Duplicate Value entered in ${fieldName}`
         err=new ErrorHandler(message,409)
+        return 
                 
     }
     res.status(err.statusCode).json({
@@ -36,10 +36,11 @@ const ErrorMiddleware=(err:any,req:Request,res:Response,next:NextFunction)=>{
     })
 
 
+    return 
+
+
    
 
-    next()
-    return 
 
 }
 

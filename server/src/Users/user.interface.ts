@@ -12,8 +12,8 @@ interface UserModelInterface extends Document{
     },
     updatedBy?:mongoose.Schema.Types.ObjectId,
     roles?:string,
-    store?:mongoose.Schema.Types.ObjectId
-    refreshToken?:string,
+    store?:mongoose.Schema.Types.ObjectId,
+    refreshToken?:string[],
     blocked?:boolean,
     comparePassword(password:string):Promise<boolean>
     

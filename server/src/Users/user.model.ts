@@ -45,9 +45,7 @@ const userSchema=new mongoose.Schema<UserModelInterface>({
         ref:'User',
       },
 
-      refreshToken:{
-        type:String,
-      },
+      refreshToken:[String],
       blocked:{
         type:Boolean,
         default:false
