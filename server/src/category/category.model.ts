@@ -17,7 +17,7 @@ const categorySchema=new mongoose.Schema<categoryInterface>({
     addedBy:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
-        // required:[true,categoryConstants.ADDEDBY_REQUIRED_MESSAGE]
+        required:[true,categoryConstants.ADDEDBY_REQUIRED_MESSAGE]
     },
     discontinues:{
         type:Boolean,

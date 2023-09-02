@@ -3,9 +3,12 @@ import asyncHandler from "express-async-handler";
 import { NextFunction, Request, Response } from "express";
 import validateMongodbId from "../utils/validateMongoId";
 import BrandModel from "./brand.model";
+import { customRequest } from "../middlewares/authMiddleware";
+import ProductModel from "../Product/product.model";
 
 export const createBrand = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: customRequest, res: Response, next: NextFunction) => {
+    req.body.addedBy=req?.user?._id;
     const brand = await BrandModel.create(req.body);
     res.status(201).json({
       sucess: true,
@@ -54,10 +57,10 @@ export const getASingleBrand = asyncHandler(
 
 
 export const updateBrand = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: customRequest, res: Response, next: NextFunction) => {
     const id = req.params.id;
     validateMongodbId(id);
-
+    req.body.updatedBy=req.user?._id
     const brand = await BrandModel.findById(id);
     if (!brand) {
       next(new HandleError("Brand not found", 404));
@@ -77,6 +80,8 @@ export const updateBrand = asyncHandler(
 
 
 
+
+
 export const deleteBrand = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
       const id = req.params.id;
@@ -84,6 +89,12 @@ export const deleteBrand = asyncHandler(
     const brand = await BrandModel.findById(id);
     if (!brand) {
         next(new HandleError("Brand not found", 404));
+    }
+
+
+    const active=await ProductModel.findOne({brand:req.params.id})
+    if(active){
+        next(new HandleError("Brand  is used and it cant be deleted", 406));
     }
 
     const updBrand = await BrandModel.findByIdAndDelete(id);

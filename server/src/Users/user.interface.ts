@@ -6,12 +6,9 @@ interface UserModelInterface extends Document{
     password:string,
     
     phone:string
-    avatar?:{
-        publicId:string,
-        url:string
-    },
+   
     updatedBy?:mongoose.Schema.Types.ObjectId,
-    roles?:string,
+    roles?:string[],
     store?:mongoose.Schema.Types.ObjectId,
     refreshToken?:string[],
     blocked?:boolean,

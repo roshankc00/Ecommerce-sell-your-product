@@ -7,6 +7,9 @@ export default  cleanEnv(process.env, {
     ACESS_TOKEN_EXPIRES:str(),
     REFRESH_TOKEN_SECRET:str(),
     REFRESH_TOKEN_EXPIRES:str(),
+    CLOUDINARY_CLIENT_NAME:str(),
+    CLOUDINARY_CLIENT_API:str(),
+    CLOUDINARY_CLIENT_SECRET:str(),
    
 });
 

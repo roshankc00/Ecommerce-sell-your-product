@@ -5,6 +5,6 @@ export interface brandInterface extends Document {
     description: string;
     updatedBy?: mongoose.Schema.Types.ObjectId;
     discontinued?:boolean
-    addedBy?: mongoose.Schema.Types.ObjectId;
+    addedBy: mongoose.Schema.Types.ObjectId;
    
 }

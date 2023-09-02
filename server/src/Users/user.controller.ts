@@ -2,10 +2,11 @@ import HandleError from "../utils/errorHandler";
 import asyncHandler from "express-async-handler";
 import { NextFunction, Request, Response } from "express";
 import validateMongodbId from "../utils/validateMongoId";
-import UserModel from "./user.model";
+import UserModel from './user.model';
 import { createToken, generateRefreshToken } from "../utils/generateToken";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken'
+import UserModelInterface from "./user.interface";
 
 export const signUpUser = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -22,15 +23,14 @@ export const signUpUser = asyncHandler(
       phone,
     });
     res.status(201).json({
-      sucess: true,
+      success: true,
       newUser,
     });
   }
 );
 
 export const loginUser = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    
+  async (req: Request, res: Response, next: NextFunction) => {    
     const { email, password } = req.body;
     const cookies=req.cookies;
 
@@ -73,7 +73,7 @@ export const loginUser = asyncHandler(
 
 
     const sendUser = await UserModel.findOne({ email }).select(
-      "name, createdAt avatar roles"
+      "name, createdAt  roles"
     );
     res
       .cookie("jwt", newrefreshtoken, {
@@ -84,7 +84,7 @@ export const loginUser = asyncHandler(
       })
       res.status(200)
       .json({
-        sucess: true,
+        success: true,
         acesstoken,
         user:sendUser
        
@@ -102,8 +102,8 @@ export const logout =asyncHandler(async(req:Request,res:Response,next:NextFuncti
     const cookies=req.cookies;
     if(!cookies?.jwt){
         res.status(200).json({
-            sucess:true,
-            message:"user logout sucessfully"
+            success:true,
+            message:"user logout successfully"
         })
         return 
 
@@ -115,8 +115,8 @@ export const logout =asyncHandler(async(req:Request,res:Response,next:NextFuncti
     if(!user){
         res.clearCookie('jwt',{httpOnly:true,sameSite:'none',secure:true})
         res.status(200).json({
-            sucess:true,
-            message:"user logout sucessfully"            
+            success:true,
+            message:"user logout successfully"            
         })
         return 
     }
@@ -125,10 +125,66 @@ export const logout =asyncHandler(async(req:Request,res:Response,next:NextFuncti
     await user?.save()
     res.clearCookie('jwt',{httpOnly:true,sameSite:'none',secure:true})
      .status(200).json({
-        sucess:true,
-        message:"user logout sucessfully"   
+        success:true,
+        message:"user logout successfully"   
      })
-
-
-
 })
+
+
+
+export const getAllUser=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
+
+    const users=await UserModel.find();
+    res.status(200).json({
+        success:true,
+        users
+    })
+})
+
+
+export const getASingleUser=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
+    const id=req.params.id
+    validateMongodbId(id)
+    const user=await UserModel.findById(id)
+    if(!user){
+        return next(new HandleError("User not found",404))
+    }
+
+    res.status(200).json({
+        success:true,
+        user
+    })
+})
+
+
+
+export const uodateUserRole=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
+    const id=req.body.id
+    const role=req.body.role;
+    validateMongodbId(id)
+    const user=await UserModel.findById(id)
+    if(!user){
+        return next(new HandleError("User not found",404))
+    }
+    if(!user.roles?.includes(role)){
+
+        user.roles?.push(role)
+    } 
+    console.log(user)
+   
+    await user.save()
+    res.status(200).json({
+        success:true,
+        message:"User role has been updated sucessfully",
+        user
+    })
+})
+
+
+
+
+
+
+
+
+

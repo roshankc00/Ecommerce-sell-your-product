@@ -26,12 +26,9 @@ const userSchema=new mongoose.Schema<UserModelInterface>({
     },
    
 
-    avatar:{
-        publicId:String,
-        url:String
-    },
+ 
     roles:{
-        type:String,
+        type:[String],
         enum:['admin','user','seller'],
         default:'user',
     },

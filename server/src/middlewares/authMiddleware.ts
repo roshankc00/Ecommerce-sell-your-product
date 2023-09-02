@@ -2,7 +2,7 @@ import HandleError from "../utils/errorHandler";
 import asyncHandler from "express-async-handler";
 import env from '../utils/env.validator'
 import { NextFunction,Response,Request } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import UserModel from "../Users/user.model";
 import UserModelInterface from "../Users/user.interface";
 
@@ -11,7 +11,7 @@ import UserModelInterface from "../Users/user.interface";
 
 
 export interface customRequest extends Request {
-    user?:UserModelInterface | null
+    user?:UserModelInterface  | null
     
 }
 
@@ -22,7 +22,7 @@ export interface customRequest extends Request {
 export const checkAuth=asyncHandler(async(req:customRequest,res:Response,next:NextFunction)=>{
     try {
         if(!req.headers.authorization){
-            throw new Error("no token is attach to header")
+            throw new HandleError("no token is attach to header",401)
         }
         let checktoken=req.headers.authorization.startsWith('Bearer')
         if(!checktoken){
@@ -40,7 +40,11 @@ export const checkAuth=asyncHandler(async(req:customRequest,res:Response,next:Ne
             const email=decorded?.UserInfo?.email
             const user:UserModelInterface | null =await UserModel.findOne({email})
             req.user=user
-            next()   
+            if(req.user){
+                next()   
+            }else{
+
+            }
            
         })
     } catch (error:any) {
