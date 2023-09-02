@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 import productConstants from "./product.constant";
 import ProductModelInterface from "./product.interface";
 
@@ -76,6 +76,9 @@ const productSchema=new mongoose.Schema<ProductModelInterface>({
             ref:'User',
             required:[true]
         },
+        rating:{type:Number,required:true},
+        comment:{type:String,required:true}
+
 
     }],
 
@@ -98,6 +101,8 @@ const productSchema=new mongoose.Schema<ProductModelInterface>({
 
 },{timestamps:true})
 
+
+export type Product= InferSchemaType<typeof productSchema>
 
 
 const ProductModel=mongoose.model<ProductModelInterface>('Product',productSchema)

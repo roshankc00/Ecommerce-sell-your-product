@@ -1,7 +1,10 @@
 import mongoose ,{Document} from "mongoose";
+import { Product } from "./product.model";
 
 
 interface ProductModelInterface extends Document {
+    limit(resultperPage: number): unknown;
+    find(arg0: { title: { $regex: any; $options: string; }; } | { title?: undefined; }): ProductModelInterface;
     title:string,
     description:string
     price:number,
@@ -20,7 +23,9 @@ interface ProductModelInterface extends Document {
     ratings?:number,
     numOfReviews?:number,
     reviews?:[{
-        user:mongoose.Schema.Types.ObjectId
+        user:mongoose.Schema.Types.ObjectId,
+        rating:number,
+        comment:string
     }]
     
     addedBy:mongoose.Schema.Types.ObjectId
@@ -30,3 +35,8 @@ interface ProductModelInterface extends Document {
 }
 
 export default ProductModelInterface
+
+
+export interface CustomResponse extends Response {
+    filterData?:Product
+  }

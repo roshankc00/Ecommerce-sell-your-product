@@ -29,9 +29,10 @@ app.use(mongoSanitize())
 
 
 
+
 app.use("/api/v1",allRoutes)
-app.use(ErrorMiddleware)
 app.use(notFound)
+app.use(ErrorMiddleware)
 
 
 

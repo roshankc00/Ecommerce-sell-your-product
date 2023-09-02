@@ -2,10 +2,10 @@ import HandleError from "../utils/errorHandler";
 import asyncHandler from "express-async-handler";
 import { NextFunction, Request, Response } from "express";
 import validateMongodbId from "../utils/validateMongoId";
-import UserModel from './user.model';
+import UserModel from "./user.model";
 import { createToken, generateRefreshToken } from "../utils/generateToken";
 import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import UserModelInterface from "./user.interface";
 
 export const signUpUser = asyncHandler(
@@ -30,9 +30,9 @@ export const signUpUser = asyncHandler(
 );
 
 export const loginUser = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {    
+  async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
-    const cookies=req.cookies;
+    const cookies = req.cookies;
 
     let existuser = await UserModel.findOne({ email }).select("+password");
     if (!existuser) {
@@ -52,138 +52,133 @@ export const loginUser = asyncHandler(
 
     const newrefreshtoken = generateRefreshToken(existuser);
 
+    let newRefreshTokenArray: any = !cookies.jwt
+      ? existuser.refreshToken
+      : existuser?.refreshToken?.filter((rt) => rt !== cookies.jwt);
 
-    let  newRefreshTokenArray:any=!cookies.jwt?existuser.refreshToken:existuser?.refreshToken?.filter(rt=>rt!==cookies.jwt);
-
-
-
-    if(cookies?.jwt){
-        const refreshToken=cookies.jwt;
-        const foundToken=await UserModel.findOne({refreshToken}).exec();
-        if(!foundToken){
-            console.log("attempted token  refuse at login ")
-            newRefreshTokenArray=[]
-        }
-        res.clearCookie('jwt',{httpOnly:true,sameSite:'none',secure:true})
+    if (cookies?.jwt) {
+      const refreshToken = cookies.jwt;
+      const foundToken = await UserModel.findOne({ refreshToken }).exec();
+      if (!foundToken) {
+        console.log("attempted token  refuse at login ");
+        newRefreshTokenArray = [];
+      }
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
     }
-    existuser.refreshToken=[...newRefreshTokenArray,newrefreshtoken]
+    existuser.refreshToken = [...newRefreshTokenArray, newrefreshtoken];
 
-    await existuser.save()
-    console.log(existuser)
-
+    await existuser.save();
+    console.log(existuser);
 
     const sendUser = await UserModel.findOne({ email }).select(
       "name, createdAt  roles"
     );
-    res
-      .cookie("jwt", newrefreshtoken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
-      })
-      res.status(200)
-      .json({
-        success: true,
-        acesstoken,
-        user:sendUser
-       
-      });
-
- 
+    res.cookie("jwt", newrefreshtoken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+    res.status(200).json({
+      success: true,
+      acesstoken,
+      user: sendUser,
+    });
   }
 );
 
-
-
-
-
-export const logout =asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-    const cookies=req.cookies;
-    if(!cookies?.jwt){
-        res.status(200).json({
-            success:true,
-            message:"user logout successfully"
-        })
-        return 
-
+export const logout = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const cookies = req.cookies;
+    if (!cookies?.jwt) {
+      res.status(200).json({
+        success: true,
+        message: "user logout successfully",
+      });
+      return;
     }
 
-
-    const  refreshToken=cookies.jwt;
-    const user=await UserModel.findOne({refreshToken}).exec();
-    if(!user){
-        res.clearCookie('jwt',{httpOnly:true,sameSite:'none',secure:true})
-        res.status(200).json({
-            success:true,
-            message:"user logout successfully"            
-        })
-        return 
+    const refreshToken = cookies.jwt;
+    const user = await UserModel.findOne({ refreshToken }).exec();
+    if (!user) {
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
+      res.status(200).json({
+        success: true,
+        message: "user logout successfully",
+      });
+      return;
     }
-    
-    user!.refreshToken=user?.refreshToken?.filter(rt=>rt!==refreshToken);
-    await user?.save()
-    res.clearCookie('jwt',{httpOnly:true,sameSite:'none',secure:true})
-     .status(200).json({
-        success:true,
-        message:"user logout successfully"   
-     })
-})
 
+    user!.refreshToken = user?.refreshToken?.filter(
+      (rt) => rt !== refreshToken
+    );
+    await user?.save();
+    res
+      .clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true })
+      .status(200)
+      .json({
+        success: true,
+        message: "user logout successfully",
+      });
+  }
+);
 
-
-export const getAllUser=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-
-    const users=await UserModel.find();
+export const getAllUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const users = await UserModel.find();
     res.status(200).json({
-        success:true,
-        users
-    })
-})
+      success: true,
+      users,
+    });
+  }
+);
 
-
-export const getASingleUser=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-    const id=req.params.id
-    validateMongodbId(id)
-    const user=await UserModel.findById(id)
-    if(!user){
-        return next(new HandleError("User not found",404))
+export const getASingleUser = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    validateMongodbId(id);
+    const user = await UserModel.findById(id);
+    if (!user) {
+      return next(new HandleError("User not found", 404));
     }
 
     res.status(200).json({
-        success:true,
-        user
-    })
-})
+      success: true,
+      user,
+    });
+  }
+);
 
-
-
-export const uodateUserRole=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-    const id=req.body.id
-    const role=req.body.role;
-    validateMongodbId(id)
-    const user=await UserModel.findById(id)
-    if(!user){
-        return next(new HandleError("User not found",404))
+export const uodateUserRole = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.body.id;
+    const role = req.body.role;
+    validateMongodbId(id);
+    const user = await UserModel.findById(id);
+    if (!user) {
+      return next(new HandleError("User not found", 404));
     }
-    if(!user.roles?.includes(role)){
+    if (!user.roles?.includes(role)) {
+      user.roles?.push(role);
+    }
+    console.log(user);
 
-        user.roles?.push(role)
-    } 
-    console.log(user)
-   
-    await user.save()
+    await user.save();
     res.status(200).json({
-        success:true,
-        message:"User role has been updated sucessfully",
-        user
-    })
-})
-
-
-
-
-
+      success: true,
+      message: "User role has been updated sucessfully",
+      user,
+    });
+  }
+);
 
 
 

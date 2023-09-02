@@ -62,6 +62,8 @@ export const addStore = asyncHandler(
     });
 
 
+    fs.unlinkSync(req.file!.path)
+
 } catch (error) {
     res.status(400).json({
         sucess:false,

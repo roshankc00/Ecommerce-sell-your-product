@@ -12,7 +12,7 @@ interface OrderModelInterface extends Document{
         {
             price:number,
             quantity:number,
-            product:number,
+            product:mongoose.Schema.Types.ObjectId,
         }
     ]
 
