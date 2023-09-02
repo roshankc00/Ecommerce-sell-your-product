@@ -88,7 +88,7 @@ const productSchema=new mongoose.Schema<ProductModelInterface>({
     updatedBy:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
-        required:[true]
+        // required:[true]
 
     }
 

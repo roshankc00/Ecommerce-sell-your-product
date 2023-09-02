@@ -11,11 +11,11 @@ interface StoreModelInterface extends Document {
         city:string,
         zipcode:number
         state:number,
-        country:number
+        country:string
 
     }
 
-    logo:{
+    logo?:{
         publicId:string,
         url:string
     }

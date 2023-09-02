@@ -37,7 +37,7 @@ const storeSchema = new mongoose.Schema<StoreModelInterface>(
         required: [true, "state  is required"],
       },
       country: {
-        type: Number,
+        type: String,
         required: [true, "Please enter the store country"],
       },
     },
@@ -56,7 +56,6 @@ const storeSchema = new mongoose.Schema<StoreModelInterface>(
     updatedBy: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
-      required: [true],
     },
   },
   { timestamps: true }

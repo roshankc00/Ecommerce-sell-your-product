@@ -2,7 +2,7 @@ import HandleError from "../utils/errorHandler";
 import asyncHandler from "express-async-handler";
 import env from '../utils/env.validator'
 import { NextFunction,Response,Request } from 'express';
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import UserModel from "../Users/user.model";
 import UserModelInterface from "../Users/user.interface";
 
@@ -56,8 +56,12 @@ export const checkAuth=asyncHandler(async(req:customRequest,res:Response,next:Ne
 })
 
 // check role 
-export const checkRole=(...roles:any)=>(req:customRequest,res:Response,next:NextFunction)=>{
-    if(roles.includes(req?.user?.roles)){
+export const checkRole=(roles:string)=>(req:customRequest,res:Response,next:NextFunction)=>{
+console.log(req.user?.roles?.includes(roles))
+
+
+    
+    if(req.user?.roles?.includes(roles)){
         next()
     }else{
         res.status(400).json({
