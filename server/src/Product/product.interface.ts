@@ -23,9 +23,9 @@ interface ProductModelInterface extends Document {
     ratings?:number,
     numOfReviews?:number,
     reviews?:[{
-        user:mongoose.Schema.Types.ObjectId,
+        userId:mongoose.Schema.Types.ObjectId,
         rating:number,
-        comment:string
+        comment?:string
     }]
     
     addedBy:mongoose.Schema.Types.ObjectId

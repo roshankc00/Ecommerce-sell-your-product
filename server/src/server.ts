@@ -3,11 +3,11 @@ import { Path } from "typescript";
 import env from './utils/env.validator'
 import { config } from 'dotenv';
 import app from '.';
+import { notFound } from './middlewares/errorhandler.middleware';
 
 
 const PORT=env.PORT
 const ENV=env.NODE_ENV
-
 
 
 

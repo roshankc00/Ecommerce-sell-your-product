@@ -144,6 +144,8 @@ export const getALLProduct = asyncHandler(
 
 
 
+
+
 const deleteProduct=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
   try {
     const product=await ProductModel.findById(req.params.id)

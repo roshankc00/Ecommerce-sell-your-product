@@ -3,8 +3,9 @@ import asyncHandler from "express-async-handler";
 import { NextFunction, Request, Response } from "express";
 import validateMongodbId from "../utils/validateMongoId";
 import UserModel from "./user.model";
-import { createToken, generateRefreshToken } from "../utils/generateToken";
+import { createToken, generateRefreshToken } from '../utils/generateToken';
 import bcrypt from "bcrypt";
+import env from '../utils/env.validator'
 import jwt from "jsonwebtoken";
 import UserModelInterface from "./user.interface";
 
@@ -183,3 +184,67 @@ export const uodateUserRole = asyncHandler(
 
 
 
+
+export const RefreshToken=asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
+  try {
+    const cookies=req.cookies;
+    if(!cookies?.jwt){
+      return next(new HandleError("invalid creadentials",401))
+    }
+
+    const refreshToken=cookies.jwt;
+    res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true })
+
+    const user=await UserModel.findOne({refreshToken});
+    if(!user){
+      jwt.verify(refreshToken,env.REFRESH_TOKEN_SECRET,async(err:any,decorded:any)=>{
+        if(err){
+          return next(new HandleError("Forbidan",403))
+        }
+        const hackedUser=await UserModel.findOne({_id:decorded.userId}).exec()
+        hackedUser!.refreshToken=[]
+        await hackedUser?.save()
+        
+      })
+      return next(new HandleError("Forbidden",403))
+    }
+
+
+    const newrefreshTokenArray=user.refreshToken?.filter((rt)=>rt!=refreshToken)
+
+    jwt.verify(refreshToken,env.REFRESH_TOKEN_SECRET,async(err:any,decorded:any)=>{
+      if(err){
+        user.refreshToken=[...newrefreshTokenArray!]
+        await user.save();
+        return next(new HandleError('Unauthorized',401))
+        
+      }
+
+      if(err || user._id.toString()!==decorded.userId){
+        return next(new HandleError("Forbidden",403))
+      }
+
+      const accessToken=createToken(user)
+      const newRefreshToken=generateRefreshToken(user);
+      user!.refreshToken=[...newrefreshTokenArray!,newRefreshToken]
+      await user.save();
+      res.cookie("jwt", newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+
+
+      res.status(200).json({success:true,accessToken});
+
+    
+    })
+
+
+    
+  } catch (error) {
+    
+  }
+
+})

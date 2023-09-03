@@ -5,10 +5,10 @@ interface OrderModelInterface extends Document{
         address:string,
         city:string,
         country:string,
-        Phone:string
+        phone:string
     }
 
-    orderItem:[
+    orderItems:[
         {
             price:number,
             quantity:number,
@@ -24,11 +24,11 @@ interface OrderModelInterface extends Document{
 
     paidAt:Date,
 
-    itemPrice:number
+    itemPrice?:number
 
-    taxPrice:number
+    taxPrice?:number
     
-    shippingPrice:number
+    shippingPrice?:number
 
     totalPrice:number
     

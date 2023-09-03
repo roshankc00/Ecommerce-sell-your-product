@@ -17,17 +17,16 @@ const orderSchema=new mongoose.Schema<OrderModelInterface>({
             type:String,
             required:true,            
         },
-        Phone:{
+        phone:{
             type:String,
             required:true,            
         },
 
-        required:true
                 
 
     },
 
-    orderItem:[{
+    orderItems:[{
         price:{
             type:Number,
             required:true
@@ -41,6 +40,7 @@ const orderSchema=new mongoose.Schema<OrderModelInterface>({
             ref:"Product",
             required:true,
         }
+        
     }],
     user:{
         type:mongoose.Schema.ObjectId,
@@ -60,17 +60,17 @@ const orderSchema=new mongoose.Schema<OrderModelInterface>({
     },
     paidAt:{
         type:Date,
-        default:Date.now
+        default:Date.now,
     },
     itemPrice:{
         type:Number,
-        required:true,
-        default:0
+        default:0,
+        required:true
     },
     taxPrice:{
         type:Number,
-        required:true,
-        default:0
+        default:0,
+        required:true
     },
     shippingPrice:{
         type:Number,
@@ -84,7 +84,6 @@ const orderSchema=new mongoose.Schema<OrderModelInterface>({
     },
     orderStatus:{
         type:String,
-        required:true,
         enum:['Processing','Shipped','Delivered'],
         default:'Processing'
     },
@@ -99,3 +98,4 @@ const orderSchema=new mongoose.Schema<OrderModelInterface>({
 const OrderModel=mongoose.model<OrderModelInterface>('Order',orderSchema)
 
 export default OrderModel
+

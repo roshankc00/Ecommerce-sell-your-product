@@ -71,10 +71,9 @@ const productSchema=new mongoose.Schema<ProductModelInterface>({
         default:0,
     },
     reviews:[{
-        user:{
-            type:mongoose.Schema.ObjectId,
+        userId:{
+            type:mongoose.Schema.Types.ObjectId,
             ref:'User',
-            required:[true]
         },
         rating:{type:Number,required:true},
         comment:{type:String,required:true}
@@ -91,7 +90,6 @@ const productSchema=new mongoose.Schema<ProductModelInterface>({
     updatedBy:{
         type:mongoose.Schema.ObjectId,
         ref:'User',
-        // required:[true]
 
     }
 
